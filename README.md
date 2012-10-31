@@ -1,3 +1,5 @@
+# Brand New Gem, still in progress! 
+
 # CouchbaseStructures
 
 TODO: Write a gem description
@@ -6,7 +8,7 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'couchbase_structures'
+    gem 'couchbase-structures'
 
 And then execute:
 
@@ -14,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install couchbase_structures
+    $ gem install couchbase-structures
 
 ## Usage
 
