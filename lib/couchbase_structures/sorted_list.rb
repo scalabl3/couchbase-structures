@@ -5,31 +5,50 @@ module CouchbaseStructures
   class SortedList
     include CouchbaseDocStore
 
-    def initialize(key, sort_type = {})
-
+    attr_accessor :sort_type, :sort_key
+    
+    def initialize(key, attr = {})
+      
+      if attr.has_key? :sort_type
+        case attr[:sort_type]
+        when :json
+          @sort_type = :json
+          @sort_key = attr[:sort_key] 
+        when :simple
+          @sort_type = :simple
+        end
+      end
+      
       @key = key
-      @top_index_key = "#{key}::stack::top"
-      initialize_document(@top_index_key, 0)
-      self
+      @list_key = "#{key}::sorted_list"
+      initialize_document(@list_key, { :sorted_list => [], :last_updated => Time.now.utc.to_i })
+      self      
     end
 
-    def push(value)
-      new_top_index = increase_atomic_count(@top_index_key)
-      create_document("#{key}::stack::#{new_top_index}", value)
-      self
+    def add(value)
+      doc = get_document(@list_key)
+      list = doc["sorted_list"]
+      list << value
+      
+      # simple sort only for singular values, string, integer, float, etc.
+      list.sort!
+      
+      # complex sort for Hash types
+      
+      doc["sorted_list"] = list
+      doc["last_updated"] = Time.now.utc.to_i
+      replace_document(@list_key, doc)
+      list
     end
 
-    def pop()
-      old_top_index = get_document(@top_index_key)
-      decrease_atomic_count(@top_index_key)
-
-      doc = get_document("#{key}::stack::#{old_top_index}")
-      delete_document("#{key}::stack::#{old_top_index}")
-      doc
+    def items
+      doc = get_document(@list_key)
+      doc["sorted_list"]
     end
 
     def size
-      get_document(@top_index_key)
+      doc = get_document(@list_key)
+      doc["sorted_list"].size
     end
   end
 end
