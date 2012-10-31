@@ -1,8 +1,9 @@
-require 'document_store'
+require 'couchbase_doc_store'
 
+# haven't written this one yet... it's a copy of Stack code
 module CouchbaseStructures
   class SortedList
-    include DocumentStore
+    include CouchbaseDocStore
 
     def initialize(key, sort_type = {})
 

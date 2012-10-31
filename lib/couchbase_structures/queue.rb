@@ -1,8 +1,8 @@
-require 'document_store'
+require 'couchbase_doc_store'
 
 module CouchbaseStructures
   class Queue
-    include DocumentStore
+    include CouchbaseDocStore
 
     def initialize(key)
       @key = key
