@@ -67,6 +67,19 @@ next = stack.pop()
 ```
 
 
+#### SortedList
+
+```ruby
+require 'couchbase_structures'
+
+sorted = CouchbaseStructures::SortedList.new("sortedlist")
+sorted.add("abcdef"})
+sorted.add("aabcde")
+
+sorted.items
+# => ["aabcde", "abcdef"]
+```
+
 ## Coming Soon
 
 * Add some safeguarding code for mega-concurrency
