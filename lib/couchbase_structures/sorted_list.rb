@@ -21,8 +21,22 @@ module CouchbaseStructures
       
       @key = key
       @list_key = "#{key}::sorted_list"
-      initialize_document(@list_key, { :sorted_list => [], :last_updated => Time.now.utc.to_i })
+      initialize_document(@list_key, { :sorted_list => [], :last_updated => Time.now.utc.to_i, :user_key => @key })
       self      
+    end
+    
+    def inspect(html=false)
+      if html
+        str = "["
+        self.items.each do |item|
+          str += "<br />&nbsp;&nbsp;&nbsp;&nbsp;" + item.inspect
+        end
+        str += "<br />]"
+        
+        return "<strong>key</strong> = #{@key}    <br /><strong>items</strong> = #{str}"
+      else
+        return items.inspect
+      end
     end
 
     def add(value)
@@ -49,6 +63,10 @@ module CouchbaseStructures
     def size
       doc = get_document(@list_key)
       doc["sorted_list"].size
+    end
+    
+    def delete
+      delete_document(@list_key)
     end
   end
 end

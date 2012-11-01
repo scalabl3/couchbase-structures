@@ -15,8 +15,12 @@ module CouchbaseStructures
       self
     end
 
-    def inspect
-      "key = #{@key} head_index = #{get_document(@head_index_key).to_s} tail_index = #{get_document(@tail_index_key).to_s} items = #{self.to_a}"
+    def inspect(html = false)
+      if html
+        "<strong>key</strong> = #{@key}    <br /><strong>head_index</strong> = #{get_document(@head_index_key).to_s}  <br /><strong>tail_index</strong> = #{get_document(@tail_index_key).to_s}   <br /><strong>items</strong> = #{self.to_a(true)}"
+      else
+        "key = #{@key} head_index = #{get_document(@head_index_key).to_s} tail_index = #{get_document(@tail_index_key).to_s} items = #{self.to_a}"
+      end
     end
     
     # peek at item at index (zero based)
@@ -65,7 +69,7 @@ module CouchbaseStructures
       nil
     end
     
-    def to_a
+    def to_a(html=false)
       a = []
       head_index = get_document(@head_index_key) + 1
       tail_index = get_document(@tail_index_key)
@@ -74,7 +78,17 @@ module CouchbaseStructures
       head_index.upto(tail_index) do |i|
         a << get_document("#{@key}::#{i}")
       end
-      a
+      
+      if html
+        str = "["
+        a.each do |item|
+          str += "<br />&nbsp;&nbsp;&nbsp;&nbsp;" + item.inspect
+        end
+        str += "<br />]"
+        return str
+      else
+        return a
+      end
     end
   end
 end
